@@ -1,0 +1,11 @@
+note over browser:
+The browser executes the function 
+that renders notes to the display
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+note over server:
+The server adds the new note to its data file
+end note
+
