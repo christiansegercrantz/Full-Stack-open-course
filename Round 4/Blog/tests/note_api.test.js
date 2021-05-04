@@ -1,0 +1,81 @@
+const mongoose = require('mongoose')
+const supertest = require('supertest')
+const helper = require('./test_helper')
+const app = require('../app')
+const Blog = require('../models/blog')
+
+const api = supertest(app)
+
+beforeEach(async () => {
+  await Blog.deleteMany({})
+
+  const noteObjects = helper.listWithManyBlogs
+    .map(note => new Blog(note))
+  const promiseArray = noteObjects.map(blog => blog.save())
+  await Promise.all(promiseArray)
+})
+
+test('GET API test', async () => {
+  await api
+    .get('/api/blogs/')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+})
+
+test('Check if ID exists of returned object', async () => {
+  const response = await api.get('/api/blogs/')
+  expect(response.body[0].id).toBeDefined()
+})
+
+
+test('POST API test', async () => {
+  const newBlog = {
+    title: 'Test Blog',
+    author: 'Me',
+    url: 'www.google.com',
+    likes: 5
+  }
+
+  await api
+    .post('/api/blogs/')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAfterAddition = await helper.blogsInDb()
+  const newBlogInDB = blogsAfterAddition[blogsAfterAddition.length-1]
+  expect(newBlogInDB.id).toBeDefined()
+  delete newBlogInDB.id
+  expect(blogsAfterAddition).toHaveLength(helper.listWithManyBlogs.length + 1)
+  expect(newBlogInDB).toEqual(newBlog)
+})
+
+test('Likes are 0 if no likes defined', async () => {
+  const newBlog = {
+    title: 'Test Blog',
+    author: 'Me',
+    url: 'www.google.com'
+  }
+  const response = await api
+    .post('/api/blogs/')
+    .send(newBlog)
+
+  const addedBlogID = response.body.id
+  const addedBlog = await Blog.findById(addedBlogID)
+  expect(addedBlog.likes).toEqual(0)
+})
+
+test('Returns 400 if no title or url is defined', async () => {
+  const newBlog = {
+    author: 'Me',
+    likes: 4
+  }
+  await api
+    .post('/api/blogs/')
+    .send(newBlog)
+    .expect(400)
+})
+
+afterAll(() => {
+  mongoose.connection.close()
+})

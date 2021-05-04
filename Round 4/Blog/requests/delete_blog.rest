@@ -1,0 +1,3 @@
+DELETE http://localhost:3001/api/persons/6086b28ca96d222c642e3158
+
+DELETE https://sleepy-wildwood-21922.herokuapp.com/api/persons/1

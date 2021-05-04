@@ -89,13 +89,19 @@ const App = () => {
               setNotificationMessage('')
             }, 5000)
           })
-          .catch(() => {
-            setErrorMessage(`${personToUpdate.name} has already been removed from the server`)
-            setTimeout(() => {
-              setErrorMessage('')
-            }, 5000)
-            setPersons(persons.filter(person => person.id !== personToUpdate.id))
-            })
+          .catch((error) => {
+            if(error.response.status === 400){
+              setErrorMessage(error.response.data.error)
+              setTimeout(() => {
+                setErrorMessage('')
+              }, 5000)
+            } else{
+              setErrorMessage(`${personToUpdate.name} has already been removed from the server`)
+              setTimeout(() => {
+                setErrorMessage('')
+              }, 5000)
+              setPersons(persons.filter(person => person.id !== personToUpdate.id))
+            }})
       }
       return;
     }
@@ -113,6 +119,12 @@ const App = () => {
         setTimeout(() => {
           setNotificationMessage('')
         }, 5000)
+      })
+      .catch(error => { console.log(error.response.data) 
+        setErrorMessage(error.response.data.error)
+        setTimeout(() => {
+          setErrorMessage('')
+        }, 5000) 
       })
   }
 
