@@ -3,16 +3,24 @@ const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const bcrypt = require('bcrypt')
 
 const api = supertest(app)
 
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
+
+  const passwordHash = await bcrypt.hash(helper.singleUser.password, 5)
+  const adminUser = new User({ username: helper.singleUser.username, name: helper.singleUser.name , passwordHash })
 
   const noteObjects = helper.listWithManyBlogs
     .map(note => new Blog(note))
   const promiseArray = noteObjects.map(blog => blog.save())
   await Promise.all(promiseArray)
+  await adminUser.save()
+
 })
 
 test('GET API test', async () => {
@@ -35,9 +43,18 @@ test('POST API test', async () => {
     url: 'www.google.com',
     likes: 5
   }
+  const user = {
+    username: helper.singleUser.username,
+    password: helper.singleUser.password
+  }
+  const token = await api
+    .post('/api/login/')
+    .send(user)
+  console.log(token)
 
   await api
     .post('/api/blogs/')
+    //.set('Authorization', token)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
