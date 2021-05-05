@@ -76,6 +76,41 @@ test('Returns 400 if no title or url is defined', async () => {
     .expect(400)
 })
 
+test('DELETE API test', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(helper.listWithManyBlogs.length - 1)
+
+  const titles = blogsAtEnd.map( b => b.title)
+  expect(titles).not.toContain(blogToDelete.title)
+})
+
+test('PUT API test', async () => {
+  const newlikes = 10
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToUpdate = blogsAtStart[0]
+
+  blogToUpdate.likes = newlikes
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(blogToUpdate)
+    .expect(200)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(helper.listWithManyBlogs.length)
+  expect(blogsAtEnd[0].likes).toEqual(newlikes)
+})
+
+
 afterAll(() => {
   mongoose.connection.close()
 })
