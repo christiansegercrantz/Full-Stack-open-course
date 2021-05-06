@@ -17,11 +17,12 @@ beforeEach(async () => {
   const passwordHash = await bcrypt.hash(helper.singleUser.password, 5)
   const adminUser = new User({ username: helper.singleUser.username, name: helper.singleUser.name , passwordHash })
 
+  const savedUser = await adminUser.save()
   const noteObjects = helper.listWithManyBlogs
-    .map(note => new Blog(note))
+    .map(note => new Blog({ user: savedUser.id, ...note }))
   const promiseArray = noteObjects.map(blog => blog.save())
   await Promise.all(promiseArray)
-  await adminUser.save()
+
 
   const user = {
     username: helper.singleUser.username,
