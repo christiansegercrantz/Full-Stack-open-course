@@ -8,6 +8,8 @@ const bcrypt = require('bcrypt')
 
 const api = supertest(app)
 
+let auth = ''
+
 beforeEach(async () => {
   await Blog.deleteMany({})
   await User.deleteMany({})
@@ -20,6 +22,15 @@ beforeEach(async () => {
   const promiseArray = noteObjects.map(blog => blog.save())
   await Promise.all(promiseArray)
   await adminUser.save()
+
+  const user = {
+    username: helper.singleUser.username,
+    password: helper.singleUser.password
+  }
+  const res = await api
+    .post('/api/login/')
+    .send(user)
+  auth = `bearer ${res.body.token}`
 
 })
 
@@ -43,18 +54,10 @@ test('POST API test', async () => {
     url: 'www.google.com',
     likes: 5
   }
-  const user = {
-    username: helper.singleUser.username,
-    password: helper.singleUser.password
-  }
-  const token = await api
-    .post('/api/login/')
-    .send(user)
-  console.log(token)
 
   await api
     .post('/api/blogs/')
-    //.set('Authorization', token)
+    .set('Authorization', auth)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -62,9 +65,8 @@ test('POST API test', async () => {
   const blogsAfterAddition = await helper.blogsInDb()
   const newBlogInDB = blogsAfterAddition[blogsAfterAddition.length-1]
   expect(newBlogInDB.id).toBeDefined()
-  delete newBlogInDB.id
   expect(blogsAfterAddition).toHaveLength(helper.listWithManyBlogs.length + 1)
-  expect(newBlogInDB).toEqual(newBlog)
+  expect(newBlogInDB.title).toEqual(newBlog.title)
 })
 
 test('Likes are 0 if no likes defined', async () => {
@@ -73,8 +75,11 @@ test('Likes are 0 if no likes defined', async () => {
     author: 'Me',
     url: 'www.google.com'
   }
+
+
   const response = await api
     .post('/api/blogs/')
+    .set('Authorization', auth)
     .send(newBlog)
 
   const addedBlogID = response.body.id
@@ -87,8 +92,10 @@ test('Returns 400 if no title or url is defined', async () => {
     author: 'Me',
     likes: 4
   }
+
   await api
     .post('/api/blogs/')
+    .set('Authorization', auth)
     .send(newBlog)
     .expect(400)
 })
@@ -99,6 +106,7 @@ test('DELETE API test', async () => {
 
   await api
     .delete(`/api/blogs/${blogToDelete.id}`)
+    .set('Authorization', auth)
     .expect(204)
 
   const blogsAtEnd = await helper.blogsInDb()
@@ -127,6 +135,19 @@ test('PUT API test', async () => {
   expect(blogsAtEnd[0].likes).toEqual(newlikes)
 })
 
+test('Returns 401 if no token is provided', async () => {
+  const newBlog = {
+    title: 'Test Blog',
+    author: 'Me',
+    url: 'www.google.com',
+    likes: 5
+  }
+
+  await api
+    .post('/api/blogs/')
+    .send(newBlog)
+    .expect(401)
+})
 
 afterAll(() => {
   mongoose.connection.close()

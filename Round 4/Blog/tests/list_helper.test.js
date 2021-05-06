@@ -215,7 +215,7 @@ describe('Author with most blogs', () => {
     }
   ]
   const topAuthor = {
-    author: "Robert C. Martin",
+    author: 'Robert C. Martin',
     blogs: 3
   }
   test('Most blogs of many blogs', () => {
