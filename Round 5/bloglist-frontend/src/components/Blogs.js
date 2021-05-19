@@ -1,8 +1,9 @@
-/* eslint-disable react/prop-types */
+
 import React from 'react'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
 import Blog from './Blog'
+import PropTypes from 'prop-types'
 
 const BlogFormToggler = ({ handleAddBlog, blogFormRef }) => (
   <Togglable buttonLabel = 'Add new blog' ref={blogFormRef}>
@@ -27,6 +28,24 @@ const Blogs = ({ user, blogs, handleLikeBlog, handleDeleteBlog, handleAddBlog, b
       )}
     </div>
   )
+}
+Blogs.propTypes = {
+  user: PropTypes.object.isRequired,
+  blogs: PropTypes.array.isRequired,
+  handleLikeBlog: PropTypes.func.isRequired,
+  handleDeleteBlog: PropTypes.func.isRequired,
+  handleAddBlog: PropTypes.func.isRequired,
+  blogFormRef: PropTypes.any,
+  handleLogout: PropTypes.func.isRequired
+}
+
+LogoutButton.propTypes = {
+  handleLogout: PropTypes.func.isRequired
+}
+
+BlogFormToggler.propTypes = {
+  handleAddBlog: PropTypes.func.isRequired,
+  blogFormRef:PropTypes.any
 }
 
 export default Blogs

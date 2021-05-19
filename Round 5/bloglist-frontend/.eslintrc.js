@@ -3,7 +3,8 @@ module.exports = {
     'browser': true,
     'commonjs': true,
     'es2021': true,
-    'cypress/globals': true
+    'cypress/globals': true,
+    'jest/globals': true
   },
   'extends': [
     'eslint:recommended',
@@ -42,6 +43,12 @@ module.exports = {
     ],
     'arrow-spacing': [
       'error', { 'before': true, 'after': true }
-    ]
+    ],
+    'no-console': 0
+  },
+  'settings': {
+    'react': {
+      'version': 'detect'
+    }
   }
 }

@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const BlogDetails = ({ blog, handleLikeBlog, handleDeleteBlog }) => {
   const likeBlog = () => {
@@ -46,5 +46,16 @@ const Blog = ({ blog, handleLikeBlog, handleDeleteBlog }) => {
   )
 }
 
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  handleLikeBlog: PropTypes.func.isRequired,
+  handleDeleteBlog:PropTypes.func.isRequired
+}
+
+BlogDetails.propTypes = {
+  blog: PropTypes.object.isRequired,
+  handleLikeBlog: PropTypes.func.isRequired,
+  handleDeleteBlog:PropTypes.func.isRequired
+}
 
 export default Blog

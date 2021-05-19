@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const BlogForm = ({ handleAddBlog }) => {
   const [title, setTitle] = useState('')
@@ -50,6 +50,10 @@ const BlogForm = ({ handleAddBlog }) => {
       <button type="submit">Create</button>
     </form>
   )
+}
+
+BlogForm.propTypes = {
+  handleAddBlog: PropTypes.func.isRequired
 }
 
 export default BlogForm

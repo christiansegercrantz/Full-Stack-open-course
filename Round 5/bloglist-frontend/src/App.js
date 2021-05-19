@@ -1,8 +1,8 @@
-/* eslint-disable react/prop-types */
 import React, { useState, useEffect, useRef } from 'react'
 import Blogs from './components/Blogs'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { SuccessNotification,ErrorNotification } from './components/Notification'
 
 const App = () => {
   const [notificationMessage, setNotificationMessage] = useState('')
@@ -29,27 +29,6 @@ const App = () => {
   }, [])
 
   const blogFormRef = useRef()
-
-
-  const Notification = ({ message, color }) => {
-    const style = {
-      color: color,
-      background: 'lightgrey',
-      fontSize: 20,
-      borderStyle: 'solid',
-      borderRadius: 5,
-      padding: 10,
-      marginBottom: 10,
-    }
-    if (message === '') {
-      return null
-    }
-    return (
-      <div style = {style} id="notification">
-        {message}
-      </div>
-    )
-  }
 
   const showNotification = (message, error = false) => {
     if(error){
@@ -164,18 +143,6 @@ const App = () => {
 
 
 
-  const SuccessNotification = ({ message }) => {
-    return(
-      <Notification message = {message} color = 'green'/>
-    )
-  }
-
-  const ErrorNotification = ({ message }) => {
-    return(
-      <Notification message = {message} color = 'red'/>
-    )
-  }
-
 
   return (
     <div>
@@ -191,5 +158,7 @@ const App = () => {
     </div>
   )
 }
+
+
 
 export default App
