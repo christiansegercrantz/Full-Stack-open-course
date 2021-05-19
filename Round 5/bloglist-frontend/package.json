@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.6.3",
     "axios": "^0.21.1",
     "react": "^17.0.1",
@@ -16,7 +14,13 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cypress:open": "cypress open",
+    "cypress:clear": "cypress cache clear",
+    "test:e2e": "cypress run",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+
   },
   "eslintConfig": {
     "extends": [
@@ -36,5 +40,13 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:3003"
+  "proxy": "http://localhost:3003",
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.12.0",
+    "@testing-library/react": "^11.2.6",
+    "cypress": "^7.3.0",
+    "eslint": "^7.26.0",
+    "eslint-plugin-cypress": "^2.11.3",
+    "eslint-plugin-react": "^7.23.2"
+  }
 }
