@@ -1,13 +1,13 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFkbWluIiwiaWQiOiI2MDkyOTk2MzkzMGQ5MjQ4ZjBlNGQzZmYiLCJpYXQiOjE2MjAyMjI0NTh9.xbClfaESaLQQh9pPARpfgaOz4mtVy6v_EON1_JpQC1Y
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2MGE0ZGZmMzExYTY5ZjNkZmM4MDhkNzkiLCJpYXQiOjE2MjE0MjkyNzh9.ACkMEubWLhoPrCqFzFKSQ42-exPI68ISwuEQX_GFYNU
 
 { 
   "title": "A second blog",
   "author": "You",
   "url": "yahoo.com",
   "likes": "6",
-  "userid": "6092862686e3411b8815160a" 
+  "userid": "60a4dff311a69f3dfc808d79" 
 }
 
 ###
