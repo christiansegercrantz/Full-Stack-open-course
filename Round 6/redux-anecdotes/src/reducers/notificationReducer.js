@@ -1,3 +1,4 @@
+let timer
 
 export const setNotification = (text, delay) => {
   return async dispatch => {
@@ -5,7 +6,8 @@ export const setNotification = (text, delay) => {
       type: 'SET',
       data: text
     })
-    setTimeout(() => {
+    clearTimeout(timer)
+    timer =  setTimeout(() => {
       dispatch({
         type: 'SET',
         data: ''
