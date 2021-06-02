@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {
-  BrowserRouter as Router,
+  BrowserRouter as 
   Switch, Route, Link, useRouteMatch
 } from "react-router-dom"
 
@@ -141,7 +141,7 @@ const App = () => {
     : null
 
   return (
-    <Router>
+    <div>
       <h1>Software anecdotes</h1>
       <Menu />
     
@@ -160,7 +160,7 @@ const App = () => {
         </Route>
       </Switch>
       <Footer />
-    </Router>
+    </div>
   )
 }
 
