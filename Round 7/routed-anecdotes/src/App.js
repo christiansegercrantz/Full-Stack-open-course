@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import {
-  BrowserRouter as 
-  Switch, Route, Link, useRouteMatch
+  Switch, Route, Link, useRouteMatch, useHistory
 } from "react-router-dom"
+
+import { useField } from './hooks/index'
 
 const Menu = () => {
   const padding = {
@@ -16,6 +17,13 @@ const Menu = () => {
   </div>
   )
 }
+
+const Notification = ({ notification }) => {
+  return(
+  <div>
+    {notification}
+  </div>
+)}
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
@@ -31,10 +39,10 @@ const AnecdoteList = ({ anecdotes }) => (
 const Anecdote = ({ anecdote}) => (
   <div>
     <h2>{anecdote.content}</h2>
-    has {anecdote.vote} vote{anecdote.vote === 1 ? '' : 's'}
+    has {anecdote.votes} vote{anecdote.votes === 1 ? '' : 's'}
   </div>
 )
-
+  
 const About = () => (
   <div>
     <h2>About anecdote app</h2>
@@ -57,20 +65,27 @@ const Footer = () => (
   </div>
 )
 
-const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+const CreateNew = ({addNew}) => {
+  const {reset: contentReset, ...content} = useField('text')
+  const {reset: authorReset, ...author} = useField('text')
+  const {reset: infoReset, ...info} = useField('text')
 
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    props.addNew({
-      content,
-      author,
-      info,
+    addNew({
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
+  }
+
+  const handleReset = (e) => {
+    e.preventDefault()
+    contentReset()
+    authorReset()
+    infoReset()
   }
 
   return (
@@ -79,17 +94,18 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...content} />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...author} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input {...info}  />
         </div>
         <button>create</button>
+        <button onClick={handleReset}>reset</button>
       </form>
     </div>
   )
@@ -109,16 +125,20 @@ const App = () => {
       content: 'Premature optimization is the root of all evil',
       author: 'Donald Knuth',
       info: 'http://wiki.c2.com/?PrematureOptimization',
-      votes: 0,
+      votes: 1,
       id: '2'
     }
   ])
 
   const [notification, setNotification] = useState('')
+  const history = useHistory()
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    history.push('/')
+    setNotification(`A new anecdote ${anecdote.content} created!`)
+    setTimeout( () => {setNotification('')}, 10*1000)
   }
 
   const anecdoteById = (id) =>
@@ -135,18 +155,19 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
-  const match = useRouteMatch('/notes/:id')
+  const match = useRouteMatch('/anecdotes/:id')
   const anecdote = match 
-    ? anecdotes.find(a => a.id === Number(match.params.id))
+    ? anecdoteById(match.params.id)
     : null
 
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
-    
+      <Notification notification = {notification} />
+
       <Switch>
-        <Route path ="/anecdote/:id">
+        <Route path ="/anecdotes/:id">
           <Anecdote anecdote={anecdote} />
         </Route>
         <Route path="/about">
