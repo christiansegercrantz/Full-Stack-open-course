@@ -4,6 +4,7 @@ import Togglable from './Togglable'
 import BlogForm from './BlogForm'
 import Blog from './Blog'
 import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
 
 const BlogFormToggler = ({ handleAddBlog, blogFormRef }) => (
   <Togglable buttonLabel = 'Add new blog' ref={blogFormRef}>
@@ -11,14 +12,18 @@ const BlogFormToggler = ({ handleAddBlog, blogFormRef }) => (
   </Togglable>
 )
 
-const LogoutButton = ({ handleLogout }) => (
-  <button onClick={() => handleLogout}>
-      Logout
-  </button>
-)
+const LogoutButton = ({ handleLogout }) => {
+  console.log('Button clicked')
+  return(
+    <button onClick={() => handleLogout}>
+        Logout
+    </button>
+  )
+}
 
-const Blogs = ({ user, blogs, handleLikeBlog, handleDeleteBlog, handleAddBlog, blogFormRef, handleLogout }) => {
-
+const Blogs = ({ handleLikeBlog, handleDeleteBlog, handleAddBlog, blogFormRef, handleLogout }) => {
+  const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
   return(
     <div>
       <p>{user.name} logged in <LogoutButton handleLogout = {handleLogout}/></p>
@@ -31,7 +36,6 @@ const Blogs = ({ user, blogs, handleLikeBlog, handleDeleteBlog, handleAddBlog, b
 }
 Blogs.propTypes = {
   user: PropTypes.object.isRequired,
-  blogs: PropTypes.array.isRequired,
   handleLikeBlog: PropTypes.func.isRequired,
   handleDeleteBlog: PropTypes.func.isRequired,
   handleAddBlog: PropTypes.func.isRequired,

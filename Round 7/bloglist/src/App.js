@@ -1,115 +1,100 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Blogs from './components/Blogs'
 import blogService from './services/blogs'
-import loginService from './services/login'
-import { SuccessNotification,ErrorNotification } from './components/Notification'
+import Notification from './components/Notification'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { setErrorNotification, setSuccessNotification } from './reducers/notificationReducer'
+import { initializeBlogs, addBlog, removeBlog, likeBlog } from './reducers/blogReducer'
+import { getLoggedInUser, loginUser, logoutUser } from './reducers/userReducer'
+
 
 const App = () => {
-  const [notificationMessage, setNotificationMessage] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  //const [user, setUser] = useState(null)
+  const user = useSelector(state => state.user)
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs.sort(
-        (first, second) => second.likes - first.likes ||  first.title.localeCompare(second.title)
-      ))
-    )
-  }, [])
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if(loggedUserJSON) {
-      setUser(JSON.parse(loggedUserJSON))
-    }
+    dispatch(getLoggedInUser())
   }, [])
 
   const blogFormRef = useRef()
 
-  const showNotification = (message, error = false) => {
-    if(error){
-      setErrorMessage(message)
-      setTimeout(() => {
-        setErrorMessage('')
-      }, 5000)
-    } else{
-      setNotificationMessage(message)
-      setTimeout(() => {
-        setNotificationMessage('')
-      }, 5000)
-    }
-  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({
-        username, password
-      })
-      window.localStorage.setItem('loggedUser', JSON.stringify(user))
-      setUser(user)
+      //const user = await loginService.login({
+      //  username, password
+      //})
+      //window.localStorage.setItem('loggedUser', JSON.stringify(user))
+      //setUser(user)
+      const user = await dispatch(loginUser(username, password))
       setUsername('')
       setPassword('')
-      showNotification('Successfully logged in')
+      dispatch(setSuccessNotification(`Successfully logged in ${user.name}`))
     }
     catch (e) {
       console.log('Error logging in:', e)
-      showNotification('Invalid username or password', true)
+      dispatch(setErrorNotification('Invalid username or password'))
     }
   }
 
   const handleLogout = (event) => {
     event.preventDefault()
     try {
+      dispatch(logoutUser())
       window.localStorage.removeItem('loggedUser')
-      window.location.reload(false)
+      location.reload()
     }
     catch (e) {
       console.log('Error logging out:', e)
-      showNotification(`Error while logging out encountered: ${e}`, true)
+      dispatch(setErrorNotification(`Error while logging out encountered: ${e}`))
     }
   }
 
   const handleAddBlog = async (newBlogObj) => {
     try{
       blogService.setToken(user.token)
-      const addedBlog = await blogService.create(newBlogObj)
-      showNotification(`${addedBlog.title} by ${addedBlog.author} has been added!`)
-      setBlogs(blogs.concat(addedBlog))
+      const addedBlog = await dispatch(addBlog(newBlogObj))
+      dispatch(setSuccessNotification(`${addedBlog.title} by ${addedBlog.author} has been added!`))
       blogFormRef.current.toggleVisibility()
     }
     catch (e) {
       console.log('Error adding blog:', e)
-      showNotification(`Could not add ${newBlogObj.title} by ${newBlogObj.author} because: ${e}`, true)
+      dispatch(setErrorNotification(`Could not add ${newBlogObj.title} by ${newBlogObj.author} because: ${e}`))
     }
   }
 
   const handleLikeBlog = async (BlogObj) => {
     try{
-      await blogService.addLike(BlogObj)
-      showNotification(`${BlogObj.title}  has been liked!`)
+      await dispatch(likeBlog(BlogObj))
+      dispatch(setSuccessNotification(`${BlogObj.title}  has been liked!`))
     }
     catch (e) {
       console.log('Error liking blog:', e)
-      showNotification(`Could not like ${BlogObj.title} because: ${e}`, true)
+      dispatch(setErrorNotification(`Could not like ${BlogObj.title} because: ${e}`))
     }
   }
 
   const handleDeleteBlog = async (BlogObj) => {
     try{
       blogService.setToken(user.token)
-      await blogService.remove(BlogObj)
-      showNotification(`${BlogObj.title}  has been removed!`)
-      setBlogs(blogs.filter(blog => blog.id !== BlogObj.id))
+      dispatch(removeBlog(BlogObj))
+      dispatch(setSuccessNotification(`${BlogObj.title}  has been removed!`))
 
     }
     catch (e) {
       console.log('Error deleting blog:', e)
-      showNotification(`Could not delete ${BlogObj.title} because: ${e}`, true)
+      dispatch(setErrorNotification(`Could not delete ${BlogObj.title} because: ${e}`))
     }
   }
 
@@ -140,20 +125,15 @@ const App = () => {
   )
 
 
-
-
-
-
   return (
     <div>
       <h2>Blogs</h2>
       <div>
-        <SuccessNotification message = {notificationMessage}/>
-        <ErrorNotification message = {errorMessage}/>
+        <Notification />
       </div>
       {user === null ?
         loginForm() :
-        <Blogs user = {user} blogs = {blogs} handleLikeBlog = {handleLikeBlog} handleDeleteBlog = {handleDeleteBlog} handleAddBlog={handleAddBlog} blogFormRef = {blogFormRef} handleLogout = {handleLogout}/>
+        <Blogs handleLikeBlog = {handleLikeBlog} handleDeleteBlog = {handleDeleteBlog} handleAddBlog={handleAddBlog} blogFormRef = {blogFormRef} handleLogout = {handleLogout}/>
       }
     </div>
   )
