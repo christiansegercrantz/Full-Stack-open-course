@@ -27,7 +27,7 @@ const Blogs = ({ handleLikeBlog, handleDeleteBlog, handleAddBlog, blogFormRef, h
   return(
     <div>
       <p>{user.name} logged in <LogoutButton handleLogout = {handleLogout}/></p>
-      {<BlogFormToggler handleAddBlog={handleAddBlog} blogFormRef={blogFormRef}/>}
+      <BlogFormToggler handleAddBlog={handleAddBlog} blogFormRef={blogFormRef}/>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} handleLikeBlog = {handleLikeBlog} handleDeleteBlog= {handleDeleteBlog}/>
       )}
@@ -35,7 +35,6 @@ const Blogs = ({ handleLikeBlog, handleDeleteBlog, handleAddBlog, blogFormRef, h
   )
 }
 Blogs.propTypes = {
-  user: PropTypes.object.isRequired,
   handleLikeBlog: PropTypes.func.isRequired,
   handleDeleteBlog: PropTypes.func.isRequired,
   handleAddBlog: PropTypes.func.isRequired,

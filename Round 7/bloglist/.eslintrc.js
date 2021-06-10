@@ -17,7 +17,7 @@ module.exports = {
     'ecmaVersion': 12
   },
   'plugins': [
-    'react', 'jest', 'cypress'
+    'react', 'jest', 'cypress', 'react-hooks'
   ],
   'rules': {
     'indent': [
@@ -44,7 +44,9 @@ module.exports = {
     'arrow-spacing': [
       'error', { 'before': true, 'after': true }
     ],
-    'no-console': 0
+    'no-console': 0,
+    'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
+    'react-hooks/exhaustive-deps': 'warn' // Checks effect dependencies
   },
   'settings': {
     'react': {
