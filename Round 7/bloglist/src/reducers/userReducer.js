@@ -32,7 +32,6 @@ export const logoutUser = () => {
     dispatch({
       type: 'LOGOUT'
     })
-    location.reload()
   }
 }
 

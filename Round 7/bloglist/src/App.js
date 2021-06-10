@@ -3,13 +3,30 @@ import Blogs from './components/Blogs'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
 import { useDispatch, useSelector } from 'react-redux'
+import {
+  Switch, Route, Link//, useRouteMatch, useHistory
+} from 'react-router-dom'
 
 import LoginForm from './components/LoginForm'
+import UserList from './components/UserList'
 
 import { setErrorNotification, setSuccessNotification } from './reducers/notificationReducer'
 import { initializeBlogs, addBlog, removeBlog, likeBlog } from './reducers/blogReducer'
 import { getLoggedInUser, logoutUser } from './reducers/userReducer'
+import { initUsers } from './reducers/usersReducer'
 
+
+const Menu = () => {
+  const padding = {
+    paddingRight: 5
+  }
+  return (
+    <div>
+      <Link style={padding} to="/"> Blogs </Link>
+      <Link style={padding} to="/users"> Users </Link>
+    </div>
+  )
+}
 
 const App = () => {
   const user = useSelector(state => state.user)
@@ -22,17 +39,18 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getLoggedInUser())
-  }, [])
+  }, [dispatch])
 
+  useEffect(() => {
+    dispatch(initUsers())
+  }, [dispatch])
 
 
   const handleLogout = (event) => {
     event.preventDefault()
-    console.log('handleLougout ran')
     try {
       dispatch(logoutUser())
-      window.localStorage.removeItem('loggedUser')
-      location.reload()
+      dispatch(setSuccessNotification('User has been successfully logged out'))
     }
     catch (e) {
       console.log('Error logging out:', e)
@@ -77,19 +95,22 @@ const App = () => {
     }
   }
 
-
-
-
   return (
     <div>
       <h2>Blogs</h2>
-      <div>
-        <Notification />
-      </div>
-      {user === null ?
-        //loginForm() :
+      <Menu/>
+      <Notification />
+      {user.token === '' ?
         <LoginForm /> :
-        <Blogs handleLikeBlog = {handleLikeBlog} handleDeleteBlog = {handleDeleteBlog} handleAddBlog = {handleAddBlog} blogFormRef = {blogFormRef} handleLogout = {handleLogout}/>
+        <Switch>
+          <Route path ="/users">
+            <UserList/>
+          </Route>
+          <Route path ="/">
+            <Blogs handleLikeBlog = {handleLikeBlog} handleDeleteBlog = {handleDeleteBlog} handleAddBlog = {handleAddBlog} blogFormRef = {blogFormRef} handleLogout = {handleLogout}/>
+          </Route>
+        </Switch>
+
       }
     </div>
   )

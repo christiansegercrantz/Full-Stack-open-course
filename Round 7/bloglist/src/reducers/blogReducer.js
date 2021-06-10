@@ -1,6 +1,6 @@
 import blogService from '../services/blogs'
 
-const initialState = []
+
 
 const sortBlogs = (blogs) => {
   return blogs.sort((first, second) => second.likes - first.likes ||  first.title.localeCompare(second.title)
@@ -53,6 +53,8 @@ export const likeBlog = (BlogObj) => {
     })
   }
 }
+
+const initialState = []
 
 const blogReducer = (state = initialState, action) => {
   switch(action.type){

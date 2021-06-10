@@ -13,9 +13,8 @@ const BlogFormToggler = ({ handleAddBlog, blogFormRef }) => (
 )
 
 const LogoutButton = ({ handleLogout }) => {
-  console.log('Button clicked')
   return(
-    <button onClick={() => handleLogout}>
+    <button onClick={handleLogout}>
         Logout
     </button>
   )
