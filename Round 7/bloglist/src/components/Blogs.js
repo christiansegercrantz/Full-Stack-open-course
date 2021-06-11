@@ -3,6 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { Button } from 'react-bootstrap'
 
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
@@ -15,9 +16,9 @@ const BlogFormToggler = ({ handleAddBlog, blogFormRef }) => (
 
 const LogoutButton = ({ handleLogout }) => {
   return(
-    <button onClick={handleLogout}>
+    <Button onClick={handleLogout}>
         Logout
-    </button>
+    </Button>
   )
 }
 

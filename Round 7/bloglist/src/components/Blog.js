@@ -8,6 +8,8 @@ import blogService from '../services/blogs'
 import {  removeBlog, likeBlog, addComment } from '../reducers/blogReducer'
 import { setErrorNotification, setSuccessNotification } from '../reducers/notificationReducer'
 
+import { Button, ListGroup } from 'react-bootstrap'
+
 const Blog = ({ blog }) => {
   const [content, setContent] = useState('')
   const dispatch = useDispatch()
@@ -50,17 +52,17 @@ const Blog = ({ blog }) => {
   }
 
   const commentsForBlog = blog.comments.map(c => {
-    return(<li key = {c.id}>{c.content}</li> )})
+    return(<ListGroup.Item key = {c.id}>{c.content}</ListGroup.Item> )})
 
 
 
   return(
     <div className = 'blogDetails'>
       <h2>{blog.title}</h2>
-      <span className = 'url'><a href ={blog.url}>{blog.url}</a> </span><br/>
-      <span className = 'likes'>likes {blog.likes} <button onClick={handleLikeBlog}>Like</button> </span><br/>
-      <span className = 'userName'>Added by {blog.user?blog.user.name:'User deleted'}</span> <br/>
-      <button onClick={handleDeleteBlog}>Remove</button>
+      <h6 className = 'url'><a href ={blog.url}>{blog.url}</a> </h6><br/>
+      <h6 className = 'likes'>likes {blog.likes} <Button onClick={handleLikeBlog}>Like</Button> </h6><br/>
+      <h6 className = 'userName'>Added by {blog.user?blog.user.name:'User deleted'}</h6> <br/>
+      <Button onClick={handleDeleteBlog}>Remove</Button>
       <div>
         <h3>Comments</h3>
         <form onSubmit = {handleAddComment}>
@@ -70,11 +72,11 @@ const Blog = ({ blog }) => {
             value = {content}
             name = "Content"
             onChange = {({ target }) => setContent(target.value)}/>
-          <button type="submit">Add comment</button>
+          <Button type="submit">Add comment</Button>
         </form>
-        <ul>
+        <ListGroup>
           {commentsForBlog}
-        </ul>
+        </ListGroup>
       </div>
     </div>
   )

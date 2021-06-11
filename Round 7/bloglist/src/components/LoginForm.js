@@ -4,6 +4,8 @@ import {  loginUser } from '../reducers/userReducer'
 
 import { setErrorNotification, setSuccessNotification } from '../reducers/notificationReducer'
 
+import { Form, Button } from 'react-bootstrap'
+
 
 
 const LoginForm = () => {
@@ -27,10 +29,10 @@ const LoginForm = () => {
   }
 
   return(
-    <form onSubmit={handleLogin} id='loginForm'>
+    <Form onSubmit={handleLogin} id='loginForm'>
       <div>
-      username:
-        <input
+        <Form.Label>username:</Form.Label>
+        <Form.Control
           id="username"
           type="text"
           value={username}
@@ -39,8 +41,8 @@ const LoginForm = () => {
         />
       </div>
       <div>
-      password:
-        <input
+        <Form.Label>password:</Form.Label>
+        <Form.Control
           id="password"
           type="password"
           value={password}
@@ -48,8 +50,8 @@ const LoginForm = () => {
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
-      <button id="login-button" type="submit">login</button>
-    </form>
+      <Button id="login-button" type="submit">login</Button>
+    </Form>
   )
 }
 

@@ -1,13 +1,15 @@
 import React  from 'react'
 import PropTypes from 'prop-types'
 
+import { ListGroup } from 'react-bootstrap'
+
 
 const User = ({ user }) => {
   if (!user) {
     return null
   }
 
-  const blogsByUser = user.blogs.map(b => <li key = {b.id}>{b.title}</li>)
+  const blogsByUser = user.blogs.map(b => <ListGroup.Item key = {b.id}>{b.title}</ListGroup.Item>)
 
   return(
     <div>
@@ -15,7 +17,7 @@ const User = ({ user }) => {
       <h3>Added blogs</h3>
       {blogsByUser.length === 0
         ? 'No blogs by the user yet...'
-        : <ul>{blogsByUser}</ul>}
+        : <ListGroup>{blogsByUser}</ListGroup>}
     </div>
   )
 }

@@ -24,29 +24,29 @@ const BlogForm = ({ handleAddBlog }) => {
     <div>
       <Form onSubmit={addNote}>
         <Form.Group>
-          <Form.label>title:</Form.label>
+          <Form.Label>title:</Form.Label>
           <Form.Control
             type = "text"
-            //id = "title"
-            //value = {title}
+            id = "title"
+            value = {title}
             name = "Title"
-            //onChange = {({ target }) => setTitle(target.value)}
+            onChange = {({ target }) => setTitle(target.value)}
           />
-          <Form.label>author:</Form.label>
+          <Form.Label>author:</Form.Label>
           <Form.Control
             type = "text"
-            //id = "author"
-            //value = {author}
+            id = "author"
+            value = {author}
             name = "Author"
-            //onChange = {({ target }) => setAuthor(target.value)}
+            onChange = {({ target }) => setAuthor(target.value)}
           />
-          <Form.label>url:</Form.label>
+          <Form.Label>url:</Form.Label>
           <Form.Control
             type = "text"
-            //id = "url"
-            //value = {url}
+            id = "url"
+            value = {url}
             name = "Url"
-            //onChange = {({ target }) => setUrl(target.value)}
+            onChange = {({ target }) => setUrl(target.value)}
           />
           <Button type="submit" variant = "primary">Create</Button>
         </Form.Group>

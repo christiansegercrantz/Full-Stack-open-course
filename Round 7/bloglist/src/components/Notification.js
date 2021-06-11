@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 
+import { Alert } from 'react-bootstrap'
+
 
 const Notification = () => {
   const notification = useSelector(state => state.notification)
@@ -18,9 +20,9 @@ const Notification = () => {
     return null
   }
   return (
-    <div style = {style} id="notification">
+    <Alert style = {style} id="notification">
       {notification.text}
-    </div>
+    </Alert>
   )
 }
 
