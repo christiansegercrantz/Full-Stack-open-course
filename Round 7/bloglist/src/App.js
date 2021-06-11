@@ -1,17 +1,18 @@
 import React, { useEffect, useRef } from 'react'
-import Blogs from './components/Blogs'
-import blogService from './services/blogs'
 import Notification from './components/Notification'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  Switch, Route, Link//, useRouteMatch, useHistory
-} from 'react-router-dom'
+import { Switch, Route, Link, useRouteMatch } from 'react-router-dom'
+
+import blogService from './services/blogs'
 
 import LoginForm from './components/LoginForm'
 import UserList from './components/UserList'
+import User from './components/User'
+import Blogs from './components/Blogs'
+import Blog from './components/Blog'
 
 import { setErrorNotification, setSuccessNotification } from './reducers/notificationReducer'
-import { initializeBlogs, addBlog, removeBlog, likeBlog } from './reducers/blogReducer'
+import { initializeBlogs, addBlog } from './reducers/blogReducer'
 import { getLoggedInUser, logoutUser } from './reducers/userReducer'
 import { initUsers } from './reducers/usersReducer'
 
@@ -30,6 +31,8 @@ const Menu = () => {
 
 const App = () => {
   const user = useSelector(state => state.user)
+  const users = useSelector(state => state.users)
+  const blogs = useSelector(state => state.blogs)
   const dispatch = useDispatch()
   const blogFormRef = useRef()
 
@@ -71,43 +74,35 @@ const App = () => {
     }
   }
 
-  const handleLikeBlog = async (BlogObj) => {
-    try{
-      await dispatch(likeBlog(BlogObj))
-      dispatch(setSuccessNotification(`${BlogObj.title}  has been liked!`))
-    }
-    catch (e) {
-      console.log('Error liking blog:', e)
-      dispatch(setErrorNotification(`Could not like ${BlogObj.title} because: ${e}`))
-    }
-  }
+  const matchedUser = useRouteMatch('/users/:id')
+  const matchedUserObj = matchedUser
+    ? users.find(u => u.id === matchedUser.params.id)
+    : null
 
-  const handleDeleteBlog = async (BlogObj) => {
-    try{
-      blogService.setToken(user.token)
-      dispatch(removeBlog(BlogObj))
-      dispatch(setSuccessNotification(`${BlogObj.title}  has been removed!`))
-
-    }
-    catch (e) {
-      console.log('Error deleting blog:', e)
-      dispatch(setErrorNotification(`Could not delete ${BlogObj.title} because: ${e}`))
-    }
-  }
+  const matchedBlog = useRouteMatch('/blogs/:id')
+  const matchedBlogObj = matchedBlog
+    ? blogs.find(b => b.id === matchedBlog.params.id)
+    : null
 
   return (
-    <div>
-      <h2>Blogs</h2>
+    <div className = "container">
+      <h1>Blogs</h1>
       <Menu/>
       <Notification />
       {user.token === '' ?
         <LoginForm /> :
         <Switch>
+          <Route path ="/users/:id">
+            <User user = {matchedUserObj}/>
+          </Route>
+          <Route path ="/blogs/:id">
+            <Blog blog = {matchedBlogObj}/>
+          </Route>
           <Route path ="/users">
             <UserList/>
           </Route>
           <Route path ="/">
-            <Blogs handleLikeBlog = {handleLikeBlog} handleDeleteBlog = {handleDeleteBlog} handleAddBlog = {handleAddBlog} blogFormRef = {blogFormRef} handleLogout = {handleLogout}/>
+            <Blogs handleAddBlog = {handleAddBlog} blogFormRef = {blogFormRef} handleLogout = {handleLogout}/>
           </Route>
         </Switch>
 

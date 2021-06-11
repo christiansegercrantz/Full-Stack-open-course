@@ -1,7 +1,5 @@
 import blogService from '../services/blogs'
 
-
-
 const sortBlogs = (blogs) => {
   return blogs.sort((first, second) => second.likes - first.likes ||  first.title.localeCompare(second.title)
   )
@@ -40,8 +38,6 @@ export const removeBlog = (BlogObj) => {
   }
 }
 
-
-
 export const likeBlog = (BlogObj) => {
   return async dispatch => {
     await blogService.addLike(BlogObj)
@@ -49,6 +45,19 @@ export const likeBlog = (BlogObj) => {
       type: 'LIKE',
       data: {
         id: BlogObj.id
+      }
+    })
+  }
+}
+
+export const addComment = (BlogObj, commentContent) => {
+  return async dispatch => {
+    const comment = await blogService.addComment(BlogObj, commentContent)
+    dispatch({
+      type: 'ADD_COMMENT',
+      data: {
+        blog: BlogObj,
+        comment
       }
     })
   }
@@ -66,9 +75,16 @@ const blogReducer = (state = initialState, action) => {
     return sortBlogs(state.filter(b => b.id !== action.data.id))
   case 'LIKE':{
     const id = action.data.id
-    const likedBlog = state.find(note => note.id === id)
+    const likedBlog = state.find(b => b.id === id)
     const updatedBlog = { ...likedBlog, votes: likedBlog.votes +1 }
     return sortBlogs(state.map(b => b.id !== id ? b : updatedBlog))
+  }
+  case 'ADD_COMMENT':{
+    const id = action.data.blog.id
+    const comment = action.data.comment
+    const affectedBlog = state.find(b => b.id === id)
+    const updatedBlog = { ...affectedBlog, comments: affectedBlog.comments.concat(comment) }
+    return state.map(b => b.id !== id ? b : updatedBlog)
   }
   default:
     return state

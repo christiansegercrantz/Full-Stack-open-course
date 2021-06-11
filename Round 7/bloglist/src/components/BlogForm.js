@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
+import { Form, Button } from 'react-bootstrap'
+
 const BlogForm = ({ handleAddBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -19,36 +21,37 @@ const BlogForm = ({ handleAddBlog }) => {
   }
 
   return(
-    <form onSubmit={addNote} className='blogForm'>
-      <div>
-        title:
-        <input
-          type = "text"
-          id = "title"
-          value = {title}
-          name = "Title"
-          onChange = {({ target }) => setTitle(target.value)}/>
-      </div>
-      <div>
-        author:
-        <input
-          type = "text"
-          id = "author"
-          value = {author}
-          name = "Author"
-          onChange = {({ target }) => setAuthor(target.value)}/>
-      </div>
-      <div>
-        url:
-        <input
-          type = "text"
-          id = "url"
-          value = {url}
-          name = "Url"
-          onChange = {({ target }) => setUrl(target.value)}/>
-      </div>
-      <button type="submit">Create</button>
-    </form>
+    <div>
+      <Form onSubmit={addNote}>
+        <Form.Group>
+          <Form.label>title:</Form.label>
+          <Form.Control
+            type = "text"
+            //id = "title"
+            //value = {title}
+            name = "Title"
+            //onChange = {({ target }) => setTitle(target.value)}
+          />
+          <Form.label>author:</Form.label>
+          <Form.Control
+            type = "text"
+            //id = "author"
+            //value = {author}
+            name = "Author"
+            //onChange = {({ target }) => setAuthor(target.value)}
+          />
+          <Form.label>url:</Form.label>
+          <Form.Control
+            type = "text"
+            //id = "url"
+            //value = {url}
+            name = "Url"
+            //onChange = {({ target }) => setUrl(target.value)}
+          />
+          <Button type="submit" variant = "primary">Create</Button>
+        </Form.Group>
+      </Form>
+    </div>
   )
 }
 

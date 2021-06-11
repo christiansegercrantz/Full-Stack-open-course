@@ -4,9 +4,8 @@ import usersService from '../services/users'
 export const initUsers = () => {
   return async dispatch => {
     const usersFromDB = await usersService.getUsers()
-    console.log(usersFromDB)
     dispatch({
-      type: 'INIT',
+      type: 'INIT_USERS',
       data: usersFromDB,
     })
   }
