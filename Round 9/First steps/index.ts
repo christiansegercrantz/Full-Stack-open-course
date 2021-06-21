@@ -1,16 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import express from 'express';
 import { calculateBmi } from './bmiCalculator';
 import { calculateExercises } from './exerciseCalculator';
 
 const app = express();
 
-/*interface BMIRes{
-  weight: number,
-  height: number,
-  BMI: string
-}*/
+interface requestBody{
+  target: number,
+  daily_exercises: Array<number>,
+}
 
 app.use(express.json());
 
@@ -30,11 +27,19 @@ app.get('/bmi', (req, res) => {
 });
 
 app.post('/exercises', (req, res) => {
-  console.log(req.body);
-  const target: number = req.body['target'];
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const exercisePerDay: Array<number> = req.body['daily_exercises'];
-  res.send(calculateExercises(target, exercisePerDay));
+  try{
+    const body = req.body as requestBody;
+    const target: number = body['target'];
+    const exercisePerDay: Array<number> = body['daily_exercises'];
+    const exerciesIsNan: boolean = exercisePerDay.some( x => isNaN(x));
+    if(isNaN(target) || exerciesIsNan){
+      res.status(400).send({error: 'malformatted parameters'});
+    }
+    res.send(calculateExercises(target, exercisePerDay));
+  }
+  catch(e){
+    res.status(400).send({error: 'parameters missing'});
+  }
 });
 
 const PORT = 3002;

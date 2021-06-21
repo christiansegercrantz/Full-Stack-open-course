@@ -1,0 +1,46 @@
+POST http://localhost:3003/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+  "date": "2021-06-21",
+  "type": "Hospital",
+  "description": "A test entry",
+  "specialist": "MD testerson",
+  "diagnosisCodes": ["S03.5"],
+  "discharge": { 
+    "date" : "2021-06-22",
+    "criteria": "Whenever"
+}}
+
+###
+
+POST http://localhost:3003/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+  "date": "2021-06-21",
+  "type": "OccupationalHealthcare",
+  "description": "A test entry",
+  "specialist": "MD testerson",
+  //"diagnosisCodes": ["S03.5"],
+  "employerName": "Mr Employeer",
+  "sickLeave": { 
+    "startDate" : "2021-06-22",
+    "endDate": "2021-06-27"
+}}
+
+###
+
+POST http://localhost:3003/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+  "date": "2021-06-21",
+  "type": "HealthCheck",
+  "description": "A test entry",
+  "specialist": "MD testerson",
+  "diagnosisCodes": ["J10.1", "J06.9"],
+  "healthCheckRating": 2
+}
+
+###
