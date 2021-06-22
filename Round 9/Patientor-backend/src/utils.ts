@@ -74,7 +74,7 @@ const parseOccupation = (occupation: unknown): string => {
 };*/
 
 const parseHealthCheckRating = (healthCheckRating: unknown): HealthCheckRating => {
-  if(!healthCheckRating || !isHealthCheckRating(healthCheckRating)) {
+  if((healthCheckRating !== 0 && !healthCheckRating) || !isHealthCheckRating(healthCheckRating)) {
     throw new Error('Innect format or input of health check rating:' + healthCheckRating);
   }
   return healthCheckRating;

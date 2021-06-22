@@ -7,7 +7,7 @@ import { Entry, Gender, Patient } from "../types";
 import { apiBaseUrl } from "../constants";
 import { Icon } from "semantic-ui-react";
 import EntryComp from "./Entry";
-import EntryFormModal, { HealthCheckFormValues } from "./EntryForm";
+import { HealthCheckFormValues, HealthCheckFormModal, OccupationalHealthcareFormModal, HospitalFormModal, OccupationalHealthcareFormValues, HospitalFormValues } from "./EntryForms";
 
 const SinglePatientInfo = () => {
   const [{ patientDetails }, dispatch] = useStateValue();
@@ -42,28 +42,58 @@ const SinglePatientInfo = () => {
     }
   };
 
-  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
-  const [error, setError] = React.useState<string | undefined>();
-
-  const openModal = (): void => setModalOpen(true);
-
-  const closeModal = (): void => {
-    setModalOpen(false);
-    setError(undefined);
+  const [hcmodalOpen, setHCModalOpen] = React.useState<boolean>(false);
+  const [hcerror, setHCError] = React.useState<string | undefined>();
+  const openHCModal = (): void => setHCModalOpen(true);
+  const closeHCModal = (): void => {
+    setHCModalOpen(false);
+    setHCError(undefined);
   };
 
-  const submitNewEntry = async (values: HealthCheckFormValues) => {
+  const [ohmodalOpen, setOHModalOpen] = React.useState<boolean>(false);
+  const [oherror, setOHError] = React.useState<string | undefined>();
+  const openOHModal = (): void => setOHModalOpen(true);
+  const closeOHModal = (): void => {
+    setOHModalOpen(false);
+    setOHError(undefined);
+  };
+
+  const [hosmodalOpen, setHosModalOpen] = React.useState<boolean>(false);
+  const [hoserror, setHosError] = React.useState<string | undefined>();
+  const openHosModal = (): void => setHosModalOpen(true);
+  const closeHosModal = (): void => {
+    setHosModalOpen(false);
+    setHosError(undefined);
+  };
+
+  const submitNewEntry = async (values: HealthCheckFormValues | OccupationalHealthcareFormValues | HospitalFormValues) => {
     try {
-      console.log(values);
+      console.log("Values from form:",values);
       const { data: newEntry } = await axios.post<Entry>(
         `${apiBaseUrl}/patients/${id}/entries`,
         values
       );
+      console.log("Entry obj from backend: ", newEntry);
       dispatch(setNewEntry(newEntry));
-      closeModal();
+      switch(newEntry.type){
+        case 'HealthCheck':{
+          closeHCModal();
+          break;
+        }
+        case 'Hospital':{
+          closeHosModal();
+          break;
+        }
+        case 'OccupationalHealthcare':{
+          closeOHModal();
+          break;
+        }
+        default:
+          break;
+      }
     } catch (e) {
       console.error(e.response?.data || 'Unknown Error');
-      setError(e.response?.data?.error || 'Unknown error');
+      setHCError(e.response?.data?.error || 'Unknown error');
     }
   };
 
@@ -82,12 +112,25 @@ const SinglePatientInfo = () => {
       <p>Date of birth:  {patientDetails.dateOfBirth}</p>
       <h4>Entries</h4>
       {entries}
-      <EntryFormModal
-        modalOpen = {modalOpen}
+      Add new entry to this patient:
+      <HealthCheckFormModal
+        modalOpen = {hcmodalOpen}
         onSubmit={submitNewEntry}
-        onClose={closeModal}
-        error={error}/>
-      <Button onClick={() => openModal()}>Add new entry to this patient</Button>
+        onClose={closeHCModal}
+        error={hcerror}/>
+      <Button onClick={() => openHCModal()}>Health check</Button>
+      <OccupationalHealthcareFormModal
+        modalOpen = {ohmodalOpen}
+        onSubmit={submitNewEntry}
+        onClose={closeOHModal}
+        error={oherror}/>
+      <Button onClick={() => openOHModal()}>Occupational healthcare</Button>
+      <HospitalFormModal
+        modalOpen = {hosmodalOpen}
+        onSubmit={submitNewEntry}
+        onClose={closeHosModal}
+        error={hoserror}/>
+      <Button onClick={() => openHosModal()}>Hospital visit</Button>
     </Container>
   );
 };

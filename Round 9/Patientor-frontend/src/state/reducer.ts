@@ -92,6 +92,12 @@ export const reducer = (state: State, action: Action): State => {
         patientDetails: {
           ...state.patientDetails,
           entries: [...state.patientDetails.entries, action.payload]},
+        patients: {
+          ...state.patients,
+          [state.patientDetails.id]: {
+            ...state.patientDetails,
+            entries: [...state.patientDetails.entries, action.payload]}
+        }
       };
     default:
       return state;
