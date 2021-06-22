@@ -110,9 +110,6 @@ const SinglePatientInfo = () => {
       <p>ssn: {patientDetails.ssn}</p>
       <p>Occupation: {patientDetails.occupation}</p>
       <p>Date of birth:  {patientDetails.dateOfBirth}</p>
-      <h4>Entries</h4>
-      {entries}
-      Add new entry to this patient:
       <HealthCheckFormModal
         modalOpen = {hcmodalOpen}
         onSubmit={submitNewEntry}
@@ -131,6 +128,8 @@ const SinglePatientInfo = () => {
         onClose={closeHosModal}
         error={hoserror}/>
       <Button onClick={() => openHosModal()}>Hospital visit</Button>
+      <h4>Entries</h4>
+      {entries}
     </Container>
   );
 };

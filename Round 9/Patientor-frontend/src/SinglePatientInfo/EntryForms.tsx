@@ -45,15 +45,6 @@ interface HospitalModalProps {
   error?: string;
 }
 
-/*export type TypeOption = {
-  value: EntryType;
-  label: string;
-};
-
-const typeOptions: TypeOption[] = [
-  {value: EntryType.HealthCheck, label: 'HealthCheck'}
-] */
-
 const isValidDate = (text: string | undefined): boolean => {
   if (text == '' || text == null) {
     return false;
@@ -202,8 +193,10 @@ export const OccupationalHealthcareForm = ({onSubmit, onCancel}: OccupationalHea
       validate={values => {
         
         const requiredError = 'Field is required';
-        const dateFormatError = 'The date is wrongly formated, it should be formated as YYYY-MM-DD';
-        const errors: { [field: string]: string } = {};
+        const dateFormatError = 'The date is wrongly formated or the dates are not possible. The date should be formated as YYYY-MM-DD';
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        const errors: { [field: string]: string | object} = {};
+        errors.sickLeave = {};
         if (!values.description) {
           errors.description = requiredError;
         }
@@ -219,11 +212,12 @@ export const OccupationalHealthcareForm = ({onSubmit, onCancel}: OccupationalHea
           errors.employerName = requiredError;
         }
         if (values.sickLeave?.startDate && !isValidDate(values.sickLeave?.startDate)){
-          errors['sickLeave.startDate'] = dateFormatError;
+          errors.sickLeave = {startDate: dateFormatError};
         }
         if(values.sickLeave?.endDate && !isValidDate(values.sickLeave?.endDate)){
-          errors['sickLeave.endDate'] = dateFormatError;
+          errors.sickLeave = {endDate: dateFormatError};
         }
+        if(Object.values(errors.sickLeave).every(x => x === null || x === '')) delete errors.sickLeave;
         return errors;
       }}
       >
@@ -330,7 +324,9 @@ export const HospitalForm = ({onSubmit, onCancel}: HospitalProps) => {
       validate={values => {
         const requiredError = 'Field is required';
         const dateFormatError = 'The date is wrongly formated, it should be formated as YYYY-MM-DD';
-        const errors: { [field: string]: string } = {};
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        const errors: { [field: string]: string|object } = {};
+        errors.discharge = {};
         if (!values.description) {
           errors.description = requiredError;
         }
@@ -343,13 +339,14 @@ export const HospitalForm = ({onSubmit, onCancel}: HospitalProps) => {
           errors.specialist = requiredError;
         }
         if (!values.discharge.date) {
-          errors['discharge.date'] = requiredError;
+          errors.discharge = {date: requiredError};
         } else if(!isValidDate(values.discharge.date)){
-          errors['discharge.date'] = dateFormatError;
+          errors.discharge = {date: dateFormatError};
         }
         if (!values.discharge.criteria){
-          errors['discharge.criteria'] = requiredError;
-        }
+          errors.discharge  = {...errors.discharge, criteria: requiredError};
+        } 
+        if(Object.values(errors.discharge).every(x => x === null || x === '')) delete errors.discharge;
         return errors;
       }}
       >
@@ -377,16 +374,22 @@ export const HospitalForm = ({onSubmit, onCancel}: HospitalProps) => {
             diagnoses={Object.values(diagnoses)}
           />
           <h4>Discharge</h4>
-          <Field 
-          label ='Date'
-          placeholder = 'Discharge date'
-          name = 'discharge.date'
-          component = {TextField}/>
-          <Field 
-          label ='Criteria'
-          placeholder = 'Discharge criteria'
-          name = 'discharge.criteria'
-          component = {TextField}/>
+          <Grid>
+            <Grid.Column floated='left' width={8}>
+              <Field 
+                label ='Date'
+                placeholder = 'Discharge date'
+                name = 'discharge.date'
+                component = {TextField}/>
+            </Grid.Column>
+            <Grid.Column floated='right' width={8}>
+              <Field 
+                label ='Criteria'
+                placeholder = 'Discharge criteria'
+                name = 'discharge.criteria'
+                component = {TextField}/>
+            </Grid.Column>
+          </Grid>
           <Grid>
             <Grid.Column floated='left' width={5}>
               <Button 
